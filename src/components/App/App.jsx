@@ -1,5 +1,7 @@
-import { Component, useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
+// import { useEffect, useState } from 'react';
+// import { nanoid } from 'nanoid';
+import { useSelector } from 'react-redux';
+import { getTodo } from 'redux/selector';
 
 import {
   Container,
@@ -13,29 +15,29 @@ import {
 } from 'components';
 
 export const App = () => {
-  const [todos, setTodos] = useState(()=> JSON.parse(localStorage.getItem('todos')) || [])
+  // const [todos, setTodos] = useState(()=> JSON.parse(localStorage.getItem('todos')) || [])
   
-  useEffect(()=>{
-    localStorage.setItem('todos', JSON.stringify(todos));
-  },[todos])
+  // useEffect(()=>{
+  //   localStorage.setItem('todos', JSON.stringify(todos));
+  // },[todos])
 
-  const addTodo = text => {
-    const todo = {
-      id: nanoid(),
-      text,
-    };
+  // const addTodo = text => {
+  //   const todo = {
+  //     id: nanoid(),
+  //     text,
+  //   };
 
-    setTodos(state => [...state, todo]);
-  };
+  //   setTodos(state => [...state, todo]);
+  // };
 
   const handleSubmit = data => {
-    addTodo(data);
+    // addTodo(data);
   };
 
   const deleteTodo = id => {
-    setTodos(state => ( state.filter(todo => todo.id !== id) ));
+    // setTodos(state => ( state.filter(todo => todo.id !== id) ));
   }
-
+const todos = useSelector(getTodo)
   return (
     <>
         <Header />
