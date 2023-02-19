@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addTodo } from 'redux/TodoSlice';
 import { nanoid } from 'nanoid';
 import { FiSearch } from 'react-icons/fi';
 import { FormBtn, InputSearch, SearchFormStyled } from './SearchForm.styled';
+import { getTodo } from 'redux/selector';
 
 export const SearchForm = () => {
   const dispatch = useDispatch()
+
+  const todos = useSelector(getTodo)
 
   const [query, setQuery] = useState('')
 
@@ -21,6 +24,14 @@ export const SearchForm = () => {
       id: nanoid(),
       text: query,
     };
+
+    const isExist = todos.find(
+      item => item.text.toLowerCase() === query.toLowerCase()
+    )
+    if (isExist) {
+      alert(`${query} is already in todos`);
+      return;
+    }
 
     dispatch(addTodo(todo));
 
