@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 
 import {
@@ -12,56 +12,36 @@ import {
   Todo,
 } from 'components';
 
-export class App extends Component {
-  state = {
-    todos: [],
-  };
+export const App = () => {
+  const [todos, setTodos] = useState(()=> JSON.parse(localStorage.getItem('todos')) || [])
+  
+  useEffect(()=>{
+    localStorage.setItem('todos', JSON.stringify(todos));
+  },[todos])
 
-  componentDidMount() {
-    const todos = JSON.parse(localStorage.getItem('todos'));
-
-    if (todos) {
-      this.setState(() => ({ todos }));
-    }
-  }
-  componentDidUpdate(prevProps, prevState) {
-    const { todos } = this.state;
-
-    if (prevState.todos !== todos) {
-      localStorage.setItem('todos', JSON.stringify(todos));
-    }
-  }
-
-  addTodo = text => {
+  const addTodo = text => {
     const todo = {
       id: nanoid(),
       text,
     };
 
-    this.setState(({ todos }) => ({
-      todos: [...todos, todo],
-    }));
+    setTodos(state => [...state, todo]);
   };
 
-  handleSubmit = data => {
-    this.addTodo(data);
+  const handleSubmit = data => {
+    addTodo(data);
   };
 
-  deleteTodo = id => {
-    this.setState(prevState => ({
-      todos: prevState.todos.filter(todo => todo.id !== id),
-    }));
-  };
+  const deleteTodo = id => {
+    setTodos(state => ( state.filter(todo => todo.id !== id) ));
+  }
 
-  render() {
-    const { todos } = this.state;
-
-    return (
-      <>
+  return (
+    <>
         <Header />
         <Section>
           <Container>
-            <SearchForm onSubmit={this.handleSubmit} />
+            <SearchForm onSubmit={handleSubmit} />
 
             {todos.length === 0 && (
               <Text textAlign="center">There are no any todos ... </Text>
@@ -75,7 +55,7 @@ export class App extends Component {
                       id={todo.id}
                       text={todo.text}
                       counter={index + 1}
-                      onClick={this.deleteTodo}
+                      onClick={deleteTodo}
                     />
                   </GridItem>
                 ))}
@@ -83,6 +63,5 @@ export class App extends Component {
           </Container>
         </Section>
       </>
-    );
-  }
+  )
 }
